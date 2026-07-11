@@ -1,7 +1,7 @@
 name: devil_run
 description: "A one-screen trap platformer built with Flutter and Flame."
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ^3.11.2
@@ -15,6 +15,10 @@ dependencies:
   shared_preferences: ^2.5.5
   google_mobile_ads: ^9.0.0
   in_app_update: ^4.2.5
+  firebase_core: ^4.11.0
+  firebase_analytics: ^12.4.3
+  firebase_crashlytics: ^5.2.4
+  in_app_review: ^2.0.12
 
 dev_dependencies:
   flutter_test:

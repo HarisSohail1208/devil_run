@@ -1,0 +1,17 @@
+{
+  "project_info": {
+    "project_number": "674543540622",
+    "project_id": "devil-run-rexwise",
+    "storage_bucket": "devil-run-rexwise.firebasestorage.app"
+  },
+  "client": [{
+    "client_info": {
+      "mobilesdk_app_id": "1:674543540622:android:678f901121bb74b3662cdf",
+      "android_client_info": {"package_name": "com.rexwise.devilrun"}
+    },
+    "oauth_client": [],
+    "api_key": [{"current_key": "AIzaSyD9w4zDGa0ngsoY49e6BKyBj3IPTCiRVFg"}],
+    "services": {"appinvite_service": {"other_platform_oauth_client": []}}
+  }],
+  "configuration_version": "1"
+}

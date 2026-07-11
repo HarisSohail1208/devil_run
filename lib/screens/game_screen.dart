@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +9,9 @@ import '../game/game_input.dart';
 import '../game/game_world.dart';
 import '../levels/level_catalog.dart';
 import '../services/audio_service.dart';
+import '../services/analytics_service.dart';
 import '../services/monetization_service.dart';
+import '../services/review_service.dart';
 import '../services/save_service.dart';
 import '../widgets/game_button.dart';
 import '../widgets/touch_controls.dart';
@@ -45,12 +49,15 @@ class _GameScreenState extends State<GameScreen> {
     if (level == null) return;
     final safeLevelIndex = levelIndex;
     _levelIndex = safeLevelIndex;
+    unawaited(AnalyticsService.instance.logLevelStart(safeLevelIndex));
     _game = DevilRunFlameGame(
       level: level,
       input: _input,
       audioService: widget.audioService,
       onLevelComplete: () {
         widget.saveService.unlockThroughIndex(safeLevelIndex);
+        unawaited(AnalyticsService.instance.logLevelComplete(safeLevelIndex));
+        unawaited(ReviewService.requestAfterMilestone(safeLevelIndex + 1));
         if (mounted) setState(() {});
       },
       onStateChanged: _handleGameStateChanged,
