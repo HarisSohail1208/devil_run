@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.devil_run"
+    namespace = "com.rexwise.devilrun"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -16,8 +16,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.devil_run"
+        applicationId = "com.rexwise.devilrun"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

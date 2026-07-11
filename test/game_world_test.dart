@@ -159,6 +159,11 @@ void main() {
       expect(world.state, entry.value, reason: entry.key.name);
       if (entry.key == TriggerAction.reverseControls) {
         expect(world.controlsReversed, isTrue);
+        expect(world.reverseControlsTimer, greaterThan(2));
+        for (var i = 0; i < 76; i++) {
+          world.update(1 / 30, GameInput(), const Size(800, 450));
+        }
+        expect(world.controlsReversed, isFalse);
       }
     }
   });

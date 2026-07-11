@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'screens/main_menu_screen.dart';
 import 'services/audio_service.dart';
+import 'services/monetization_service.dart';
 import 'services/save_service.dart';
 
 Future<void> main() async {
@@ -17,6 +18,7 @@ Future<void> main() async {
   await saveService.load();
   final audioService = AudioService(saveService);
   await audioService.initialize();
+  await MonetizationService.instance.initialize();
 
   runApp(DevilRunApp(saveService: saveService, audioService: audioService));
 }

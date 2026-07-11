@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../services/audio_service.dart';
+import '../services/monetization_service.dart';
 import '../services/save_service.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -68,6 +69,15 @@ class SettingsScreen extends StatelessWidget {
                     icon: const Icon(Icons.delete_outline_rounded),
                     label: const Text('Reset Progress'),
                   ),
+                  if (MonetizationService.instance.privacyOptionsRequired) ...[
+                    const SizedBox(height: 12),
+                    OutlinedButton.icon(
+                      onPressed:
+                          MonetizationService.instance.showPrivacyOptions,
+                      icon: const Icon(Icons.privacy_tip_outlined),
+                      label: const Text('Privacy Options'),
+                    ),
+                  ],
                 ],
               ),
             ),

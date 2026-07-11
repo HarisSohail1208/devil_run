@@ -7,6 +7,7 @@ import '../game/game_input.dart';
 import '../game/game_world.dart';
 import '../levels/level_catalog.dart';
 import '../services/audio_service.dart';
+import '../services/monetization_service.dart';
 import '../services/save_service.dart';
 import '../widgets/game_button.dart';
 import '../widgets/touch_controls.dart';
@@ -90,9 +91,14 @@ class _GameScreenState extends State<GameScreen> {
     if (mounted) setState(() {});
   }
 
-  void _nextLevel() {
+  Future<void> _nextLevel() async {
     widget.audioService.play(GameSound.click);
-    final next = LevelCatalog.nextIndexAfter(_levelIndex ?? widget.levelIndex);
+    final completedIndex = _levelIndex ?? widget.levelIndex;
+    if ((completedIndex + 1) % 3 == 0) {
+      await MonetizationService.instance.showLevelBreakInterstitial();
+      if (!mounted) return;
+    }
+    final next = LevelCatalog.nextIndexAfter(completedIndex);
     if (next == null) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
@@ -209,11 +215,11 @@ class _GameScreenState extends State<GameScreen> {
               child: Row(
                 children: [
                   if (world.controlsReversed)
-                    const Padding(
-                      padding: EdgeInsets.only(right: 10),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
                       child: _HudPill(
                         icon: Icons.swap_horiz_rounded,
-                        text: 'Reversed',
+                        text: 'Reversed ${world.reverseControlsTimer.ceil()}s',
                       ),
                     ),
                   IconButton.filled(

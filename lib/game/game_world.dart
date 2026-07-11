@@ -64,6 +64,7 @@ class GameWorld {
   double shake = 0;
   double messageTimer = 0;
   bool controlsReversed = false;
+  double reverseControlsTimer = 0;
   int deaths = 0;
 
   static const double _gravity = 1900;
@@ -76,6 +77,7 @@ class GameWorld {
     player = PlayerBody(level.spawn);
     entities = level.entities.map(GameEntity.fromDefinition).toList();
     controlsReversed = level.reverseControls;
+    reverseControlsTimer = level.reverseControls ? 2.5 : 0;
     state = PlayState.playing;
     particles.clear();
     shake = 0;
@@ -120,6 +122,11 @@ class GameWorld {
     if (state != PlayState.playing) {
       input.consumeJump();
       return;
+    }
+
+    if (reverseControlsTimer > 0) {
+      reverseControlsTimer = math.max(0, reverseControlsTimer - cappedDt);
+      if (reverseControlsTimer == 0) controlsReversed = false;
     }
 
     for (final entity in entities) {
@@ -256,7 +263,8 @@ class GameWorld {
             _burst(target.rect.center, const Color(0xffff477e), 12);
           });
         case TriggerAction.reverseControls:
-          controlsReversed = !controlsReversed;
+          controlsReversed = true;
+          reverseControlsTimer = 2.5;
           _burst(player.rect.center, const Color(0xff9b5de5), 14);
         case TriggerAction.fakeVictory:
           state = PlayState.fakeVictory;

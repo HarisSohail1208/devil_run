@@ -1,4 +1,4 @@
-package com.example.devil_run
+package com.rexwise.devilrun
 
 import io.flutter.embedding.android.FlutterActivity
 
