@@ -75,6 +75,9 @@ class _GameScreenState extends State<GameScreen> {
     final game = _game;
     if (game == null) return;
     final state = game.gameWorld.state;
+    if (state != PlayState.playing && state != PlayState.fakeVictory) {
+      _input.reset();
+    }
     if (widget.saveService.progress.vibrationEnabled &&
         state != _lastFeedbackState) {
       if (state == PlayState.dead) {

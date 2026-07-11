@@ -3,9 +3,24 @@ import '../models/level_definition.dart';
 class LevelCatalog {
   const LevelCatalog._();
 
-  static final List<LevelDefinition> levels = _rawLevels
-      .map(LevelDefinition.fromJsonText)
-      .toList(growable: false);
+  static final List<LevelDefinition> levels = _loadLevels();
+
+  static List<LevelDefinition> _loadLevels() {
+    final levels = <LevelDefinition>[];
+    final levelIds = <int>{};
+    for (var index = 0; index < _rawLevels.length; index++) {
+      try {
+        final level = LevelDefinition.fromJsonText(_rawLevels[index]);
+        if (!levelIds.add(level.id)) {
+          throw FormatException('Duplicate level id ${level.id}.');
+        }
+        levels.add(level);
+      } catch (error) {
+        throw FormatException('Level catalog entry ${index + 1}: $error');
+      }
+    }
+    return List.unmodifiable(levels);
+  }
 
   static int get levelCount => levels.length;
   static bool get hasLevels => levels.isNotEmpty;
@@ -132,7 +147,8 @@ const List<String> _rawLevels = [
     {"id": "reverse_room", "kind": "trigger", "rect": {"x": 652, "y": 420, "w": 96, "h": 240}, "triggerAction": "reverseControls"}
   ]
 }
-''','''
+''',
+  '''
 {
   "id": 3,
   "name": "Mind the Gaps",
@@ -200,7 +216,8 @@ const List<String> _rawLevels = [
     }
   ]
 }
-''','''
+''',
+  '''
 {
   "id": 4,
   "name": "Don't Trust Anything",

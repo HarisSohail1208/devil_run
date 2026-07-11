@@ -4,17 +4,28 @@ import 'save_service.dart';
 
 enum GameSound { click, jump, death, win }
 
-class AudioService {
+abstract interface class GameAudio {
+  Future<void> play(GameSound sound);
+}
+
+class AudioService implements GameAudio {
   AudioService(this._saveService);
 
   final SaveService _saveService;
   final AudioPlayer _musicPlayer = AudioPlayer(playerId: 'music');
-  final AudioPlayer _effectPlayer = AudioPlayer(playerId: 'effects');
+  static const _effectPoolSize = 4;
+  final List<AudioPlayer> _effectPlayers = List.generate(
+    _effectPoolSize,
+    (index) => AudioPlayer(playerId: 'effect-$index'),
+  );
+  int _nextEffectPlayer = 0;
 
   Future<void> initialize() async {
     await _musicPlayer.setReleaseMode(ReleaseMode.loop);
     await _musicPlayer.setVolume(0.28);
-    await _effectPlayer.setReleaseMode(ReleaseMode.stop);
+    for (final player in _effectPlayers) {
+      await player.setReleaseMode(ReleaseMode.stop);
+    }
     if (_saveService.progress.musicEnabled) {
       await startMusic();
     }
@@ -29,6 +40,7 @@ class AudioService {
     await _musicPlayer.stop();
   }
 
+  @override
   Future<void> play(GameSound sound) async {
     if (!_saveService.progress.soundEnabled) return;
     final file = switch (sound) {
@@ -37,12 +49,15 @@ class AudioService {
       GameSound.death => 'death.wav',
       GameSound.win => 'win.wav',
     };
-    await _effectPlayer.stop();
-    await _effectPlayer.play(AssetSource('audio/$file'), volume: 0.75);
+    final player = _effectPlayers[_nextEffectPlayer];
+    _nextEffectPlayer = (_nextEffectPlayer + 1) % _effectPlayers.length;
+    await player.play(AssetSource('audio/$file'), volume: 0.75);
   }
 
   Future<void> dispose() async {
     await _musicPlayer.dispose();
-    await _effectPlayer.dispose();
+    for (final player in _effectPlayers) {
+      await player.dispose();
+    }
   }
 }

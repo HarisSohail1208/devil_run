@@ -46,19 +46,44 @@ class TouchControls extends StatelessWidget {
   }
 }
 
-class _HoldButton extends StatelessWidget {
+class _HoldButton extends StatefulWidget {
   const _HoldButton({required this.icon, required this.onChanged});
 
   final IconData icon;
   final ValueChanged<bool> onChanged;
 
   @override
+  State<_HoldButton> createState() => _HoldButtonState();
+}
+
+class _HoldButtonState extends State<_HoldButton> {
+  final Set<int> _activePointers = <int>{};
+
+  void _press(int pointer) {
+    final wasReleased = _activePointers.isEmpty;
+    _activePointers.add(pointer);
+    if (wasReleased) widget.onChanged(true);
+  }
+
+  void _release(int pointer) {
+    _activePointers.remove(pointer);
+    if (_activePointers.isEmpty) widget.onChanged(false);
+  }
+
+  @override
+  void dispose() {
+    if (_activePointers.isNotEmpty) widget.onChanged(false);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (_) => onChanged(true),
-      onTapUp: (_) => onChanged(false),
-      onTapCancel: () => onChanged(false),
-      child: _ControlShell(icon: icon),
+    return Listener(
+      behavior: HitTestBehavior.opaque,
+      onPointerDown: (event) => _press(event.pointer),
+      onPointerUp: (event) => _release(event.pointer),
+      onPointerCancel: (event) => _release(event.pointer),
+      child: _ControlShell(icon: widget.icon),
     );
   }
 }

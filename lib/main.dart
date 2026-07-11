@@ -21,7 +21,7 @@ Future<void> main() async {
   runApp(DevilRunApp(saveService: saveService, audioService: audioService));
 }
 
-class DevilRunApp extends StatelessWidget {
+class DevilRunApp extends StatefulWidget {
   const DevilRunApp({
     required this.saveService,
     required this.audioService,
@@ -30,6 +30,17 @@ class DevilRunApp extends StatelessWidget {
 
   final SaveService saveService;
   final AudioService audioService;
+
+  @override
+  State<DevilRunApp> createState() => _DevilRunAppState();
+}
+
+class _DevilRunAppState extends State<DevilRunApp> {
+  @override
+  void dispose() {
+    widget.audioService.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +56,8 @@ class DevilRunApp extends StatelessWidget {
         fontFamily: 'Roboto',
       ),
       home: MainMenuScreen(
-        saveService: saveService,
-        audioService: audioService,
+        saveService: widget.saveService,
+        audioService: widget.audioService,
       ),
     );
   }

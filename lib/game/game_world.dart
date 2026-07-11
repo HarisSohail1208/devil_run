@@ -55,7 +55,7 @@ class GameWorld {
   }
 
   final LevelDefinition level;
-  final AudioService audioService;
+  final GameAudio audioService;
   late PlayerBody player;
   late List<GameEntity> entities;
   final List<Particle> particles = [];
@@ -312,7 +312,9 @@ class GameWorld {
   }
 
   void _checkDoor() {
-    for (final door in entities.where((entity) => entity.isDoor)) {
+    for (final door in entities.where(
+      (entity) => entity.isDoor && entity.definition.id == level.doorId,
+    )) {
       if (player.rect.overlaps(door.rect.deflate(4))) {
         state = PlayState.complete;
         audioService.play(GameSound.win);
